@@ -1,0 +1,9 @@
+.bg-white {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* This sets the container to cover the entire viewport height */
+    background-image: url('../../../assets/background.avif');
+    background-size: cover;
+}
