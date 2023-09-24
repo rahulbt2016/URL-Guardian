@@ -1,4 +1,10 @@
 <div class="bg-gray-100 p-6">
+  <!-- Home Button -->
+  <div class="mb-4">
+    <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded" (click)="clickHomeButton()">
+      <i class="fa fa-home mr-2"></i>
+    </button>
+  </div>
   <div class="max-w-7xl mx-auto">
     <h1 class="text-3xl font-semibold mb-4">URL Report</h1>
 
@@ -28,8 +34,8 @@
       <h2 class="text-xl font-semibold mb-2 text-blue-600">General Information</h2>
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <p *ngIf="report?.canRedirect"><strong>URL: </strong> <span class="text-green-600"><i class="fa fa-link"></i> &nbsp;<a href="{{ url }}" class="underline">{{url}}</a></span></p>
-          <p *ngIf="!report?.canRedirect"><strong>URL:</strong> <span class="text-red-600"> {{ url }}</span></p>
+          <p *ngIf="report?.canRedirect"><strong>URL: </strong> <span class="text-green-600"><i class="fa fa-link"></i> &nbsp;<a href="{{ report?.urlAnalysisResponse?.data?.attributes?.last_final_url }}" class="underline">{{ report?.urlAnalysisResponse?.data?.attributes?.last_final_url }}</a></span></p>
+          <p *ngIf="!report?.canRedirect"><strong>URL:</strong> <span class="text-red-600"> {{ report?.urlAnalysisResponse?.data?.attributes?.last_final_url }}</span></p>
           <p><strong>Title:</strong> {{ report?.urlAnalysisResponse?.data?.attributes?.title }}</p>
           <p><strong>TLD:</strong> {{ report?.urlAnalysisResponse?.data?.attributes?.tld }}</p>
         </div>

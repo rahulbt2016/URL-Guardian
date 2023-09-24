@@ -36,4 +36,8 @@ export class SearchReportComponent implements OnInit{
   clickRedirectButton() {
     window.open(this.url!, '_blank');
   }
+
+  clickHomeButton() {
+    this.router.navigate(['']);
+  }
 }
