@@ -98,25 +98,28 @@
     <!-- Last Analysis Results -->
     <div class="bg-white shadow-md p-4 mb-6">
       <h2 class="text-xl font-semibold mb-2 text-blue-600">Last Analysis Results</h2>
-      <table class="min-w-full">
+      <table class="min-w-full border-collapse">
         <thead>
           <tr>
-            <th class="py-2">Engine Name</th>
-            <th class="py-2">Category</th>
-            <th class="py-2">Method</th>
-            <th class="py-2">Result</th>
+            <th class="py-3 px-6 bg-gray-200 text-left">Engine Name</th>
+            <th class="py-3 px-6 bg-gray-200 text-left">Category</th>
+            <th class="py-3 px-6 bg-gray-200 text-left">Method</th>
+            <th class="py-3 px-6 bg-gray-200 text-left">Result</th>
           </tr>
         </thead>
         <tbody>
           <!-- Use *ngFor to loop through the last analysis results -->
-          <tr *ngFor="let engine of report?.urlAnalysisResponse?.data?.attributes?.last_analysis_results | keyvalue">
-            <td class="py-2">{{ engine.key }}</td>
-            <td class="py-2">{{ engine.value.category }}</td>
-            <td class="py-2">{{ engine.value.method }}</td>
-            <td class="py-2">{{ engine.value.result }}</td>
-          </tr>
+          <ng-container *ngFor="let engine of report?.urlAnalysisResponse?.data?.attributes?.last_analysis_results | keyvalue; let even = even">
+            <tr [class]="even ? 'bg-gray-100' : 'bg-white'">
+              <td class="py-2 px-6">{{ engine.key }}</td>
+              <td class="py-2 px-6">{{ engine.value.category }}</td>
+              <td class="py-2 px-6">{{ engine.value.method }}</td>
+              <td class="py-2 px-6">{{ engine.value.result }}</td>
+            </tr>
+          </ng-container>
         </tbody>
       </table>
+      
     </div>
   </div>
 </div>
