@@ -7,6 +7,7 @@ import org.codebrewers.netsafe.config.ApiConfig;
 import org.codebrewers.netsafe.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class IntakeService {
 
     public static final String BASE_URL = "https://www.virustotal.com/api/v3/urls";
