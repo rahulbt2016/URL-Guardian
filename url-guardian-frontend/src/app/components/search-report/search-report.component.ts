@@ -17,7 +17,7 @@ export class SearchReportComponent implements OnInit{
 
   ngOnInit() {
      this.url = this.route.snapshot.paramMap.get('url');
-      this.urlReportService.getReport(this.url!).subscribe((report: IUrlReport) => {
+     this.urlReportService.getReport(this.url!).subscribe((report: IUrlReport) => {
         this.report = report;
       });
   }
