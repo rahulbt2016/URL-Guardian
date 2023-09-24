@@ -1,1 +1,111 @@
-{{url}}
+<div class="bg-gray-100 p-6">
+  <div class="max-w-3xl mx-auto">
+    <h1 class="text-3xl font-semibold mb-4">URL Report</h1>
+
+    <!-- Result -->
+<div class="bg-white shadow-md p-4 mb-6">
+  <h2 class="text-xl font-semibold mb-2">Result</h2>
+  <div class="flex items-center">
+    <svg *ngIf="report?.canRedirect" class="w-6 h-6 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+    </svg>
+    <svg *ngIf="!report?.canRedirect" class="w-6 h-6 text-red-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M6 18l12-12"></path>
+    </svg>
+    <div>
+      <p *ngIf="report?.canRedirect" class="text-green-600">This site is safe to proceed</p>
+      <p *ngIf="!report?.canRedirect" class="text-red-600">This site looks malicious</p>
+    </div>
+  </div>
+  <div class="mt-4">
+    <button *ngIf="report?.canRedirect" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded" (click)="clickRedirectButton()">Redirect to URL</button>
+    <button *ngIf="!report?.canRedirect" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded" (click)="clickBackToSafetyButton()">Go Back to Safety</button>
+  </div>
+</div>
+
+
+    <!-- General Information -->
+    <div class="bg-white shadow-md p-4 mb-6">
+      <h2 class="text-xl font-semibold mb-2">General Information</h2>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          
+          <p *ngIf="report?.canRedirect"><strong>URL: </strong> <span class="text-green-600"> <a href="{{ url }}" class="underline">{{url}}</a></span></p>
+          <p *ngIf="!report?.canRedirect"><strong>URL:</strong> <span class="text-red-600"> {{ url }}</span></p>
+          <p><strong>Title:</strong> {{ report?.urlAnalysisResponse?.data?.attributes?.title }}</p>
+          <p><strong>TLD:</strong> {{ report?.urlAnalysisResponse?.data?.attributes?.tld }}</p>
+        </div>
+        <div>
+          <p><strong>Reputation:</strong> {{ report?.urlAnalysisResponse?.data?.attributes?.reputation }}</p>
+          <p><strong>Last Analysis Date:</strong> {{ formatDate(report?.urlAnalysisResponse?.data?.attributes?.last_analysis_date) }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Malicious and Suspicious Votes -->
+    <div class="bg-white shadow-md p-4 mb-6">
+      <h2 class="text-xl font-semibold mb-2">Malicious and Suspicious Votes</h2>
+      <p><strong>Malicious Votes:</strong> {{ report?.maliciousVotes }}</p>
+      <p><strong>Suspicious Votes:</strong> {{ report?.suspiciousVotes }}</p>
+    </div>
+
+    <!-- Vendor Names -->
+    <div class="bg-white shadow-md p-4 mb-6">
+      <h2 class="text-xl font-semibold mb-2">Vendor Names</h2>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <p><strong>Detected Malicious:</strong></p>
+          <ul>
+            <li *ngFor="let vendor of report?.vendorNameMalicious">{{ vendor }}</li>
+          </ul>
+        </div>
+        <div>
+          <p><strong>Detected Suspicious:</strong></p>
+          <ul>
+            <li *ngFor="let vendor of report?.vendorNameSuspicious">{{ vendor }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trackers -->
+    <div class="bg-white shadow-md p-4 mb-6">
+      <h2 class="text-xl font-semibold mb-2">Trackers</h2>
+      <ul>
+        <li *ngFor="let tracker of report?.urlAnalysisResponse?.data?.attributes?.trackers | keyvalue">
+          <span *ngIf="tracker.value">
+            <h3><strong>{{ tracker.key }}:</strong></h3>
+            <ul>
+              <li *ngFor="let item of tracker.value"><a class="underline" href="{{ item.url }}">{{ item.url }}</a></li>
+            </ul>
+          </span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Last Analysis Results -->
+<div class="bg-white shadow-md p-4 mb-6">
+  <h2 class="text-xl font-semibold mb-2">Last Analysis Results</h2>
+  <table class="min-w-full">
+    <thead>
+      <tr>
+        <th class="py-2">Engine Name</th>
+        <th class="py-2">Category</th>
+        <th class="py-2">Method</th>
+        <th class="py-2">Result</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Use *ngFor to loop through the last analysis results -->
+      <tr *ngFor="let engine of report?.urlAnalysisResponse?.data?.attributes?.last_analysis_results | keyvalue">
+        <td class="py-2">{{ engine.key }}</td>
+        <td class="py-2">{{ engine.value.category }}</td>
+        <td class="py-2">{{ engine.value.method }}</td>
+        <td class="py-2">{{ engine.value.result }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+  </div>
+</div>
