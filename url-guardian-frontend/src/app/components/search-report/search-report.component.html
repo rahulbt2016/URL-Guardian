@@ -28,7 +28,7 @@
       <h2 class="text-xl font-semibold mb-2 text-blue-600">General Information</h2>
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <p *ngIf="report?.canRedirect"><strong>URL: </strong> <span class="text-green-600"> <a href="{{ url }}" class="underline">{{url}}</a></span></p>
+          <p *ngIf="report?.canRedirect"><strong>URL: </strong> <span class="text-green-600"><i class="fa fa-link"></i> &nbsp;<a href="{{ url }}" class="underline">{{url}}</a></span></p>
           <p *ngIf="!report?.canRedirect"><strong>URL:</strong> <span class="text-red-600"> {{ url }}</span></p>
           <p><strong>Title:</strong> {{ report?.urlAnalysisResponse?.data?.attributes?.title }}</p>
           <p><strong>TLD:</strong> {{ report?.urlAnalysisResponse?.data?.attributes?.tld }}</p>
@@ -46,7 +46,7 @@
       <div class="flex">
         <!-- Security Concerns -->
         <div class="flex-1 bg-white shadow-md p-4 mr-2"> <!-- Adjust the margin as needed -->
-          <h3 class="text-lg font-semibold mb-2 text-red-600">Security Concerns</h3>
+          <h3 class="text-lg font-semibold mb-2 text-red-600"><i class="fa fa-shield"></i>&nbsp; Security Concerns</h3>
           <!-- Display Malicious and Suspicious Votes here -->
           <div class="bg-white shadow-md p-4 mb-6">
             <h4 class="text-lg font-semibold mb-2">Malicious and Suspicious Votes</h4>
@@ -76,7 +76,7 @@
 
         <!-- Privacy Concerns -->
         <div class="flex-1 bg-white shadow-md p-4 ml-2"> <!-- Adjust the margin as needed -->
-          <h3 class="text-lg font-semibold mb-2 text-red-600">Privacy Concerns</h3>
+          <h3 class="text-lg font-semibold mb-2 text-red-600"><i class="fa fa-lock"></i> &nbsp;Privacy Concerns</h3>
           <!-- Display Trackers here -->
           <div class="bg-white shadow-md p-4 mb-6">
             <h4 class="text-lg font-semibold mb-2">Trackers</h4>
@@ -88,6 +88,15 @@
                     <li *ngFor="let item of tracker.value"><a class="underline" href="{{ item.url }}">{{ item.url }}</a></li>
                   </ul>
                 </span>
+              </li>
+            </ul>
+          </div>
+          <!-- Display Outgoing Links here -->
+          <div class="bg-white shadow-md p-4 mb-6">
+            <h4 class="text-lg font-semibold mb-2">Outgoing Links</h4>
+            <ul>
+              <li *ngFor="let link of report?.urlAnalysisResponse?.data?.attributes?.outgoing_links">
+                <i class="fa fa-link"></i> {{link}}
               </li>
             </ul>
           </div>
@@ -119,7 +128,7 @@
           </ng-container>
         </tbody>
       </table>
-      
+
     </div>
   </div>
 </div>
