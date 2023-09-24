@@ -20,10 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -73,25 +70,48 @@ public class IntakeService {
                 .map(DataResponse::getAttributes)
                 .map(Attributes::getTotal_votes)
                 .map(Votes::getMalicious)
-                .get();
+                .orElse(null);
         var suspiciousVotes = Optional.ofNullable(urlAnalysisResponse)
                 .map(UrlAnalysisResponse::getDataResponse)
                 .map(DataResponse::getAttributes)
                 .map(Attributes::getTotal_votes)
                 .map(Votes::getSuspicious)
-                .get();
+                .orElse(null);
 
-        var canRedirect = suspiciousVotes >= 2 || maliciousVotes >= 1?true:false;
+        var lastScanResultsMalacious = Optional.ofNullable(urlAnalysisResponse)
+                .map(UrlAnalysisResponse::getDataResponse)
+                .map(DataResponse::getAttributes)
+                .map(Attributes::getLast_analysis_stats)
+                .map(LastAnalysisStats::getMalicious)
+                .orElse(null);
+
+        var lastScanResultsSuspicious = Optional.ofNullable(urlAnalysisResponse)
+                .map(UrlAnalysisResponse::getDataResponse)
+                .map(DataResponse::getAttributes)
+                .map(Attributes::getLast_analysis_stats)
+                .map(LastAnalysisStats::getSuspicious)
+                .orElse(null);
+
+        var canRedirect = suspiciousVotes < 2 && maliciousVotes < 3;
+        if(canRedirect == false){
+            if(Math.abs(maliciousVotes-lastScanResultsMalacious)>3){
+                maliciousVotes = lastScanResultsMalacious;
+            }
+            if(Math.abs(suspiciousVotes-lastScanResultsSuspicious)>3){
+                suspiciousVotes = lastScanResultsSuspicious;
+            }
+            canRedirect = suspiciousVotes < 2 && maliciousVotes < 3;
+        }
 
         var vendorNames = Optional.ofNullable(urlAnalysisResponse)
                 .map(UrlAnalysisResponse::getDataResponse)
                 .map(DataResponse::getAttributes)
                 .map(Attributes::getLast_analysis_results)
-                .get();
+                .orElse(null);
 
         List<String> vendorNameMalicious = new ArrayList<>();
         List<String> vendorNameSuspicious = new ArrayList<>();
-        vendorNames.forEach((key, value)->{
+        Objects.requireNonNull(vendorNames).forEach((key, value)->{
             if(value.getCategory().trim().equalsIgnoreCase("malicious")){
                 vendorNameMalicious.add(value.getEngine_name());
             }
@@ -106,21 +126,21 @@ public class IntakeService {
                 .map(UrlAnalysisResponse::getDataResponse)
                 .map(DataResponse::getAttributes)
                 .map(Attributes::getTrackers)
-                .get();
+                .orElse(null);
 
-        for(Field field : trackers.getClass().getDeclaredFields()){
-            try {
-                if(field.get(trackers)!=null){
-                    trackersList.add(field.getName());
+        if(trackers != null){
+            for (Field field : trackers.getClass().getDeclaredFields()) {
+                try {
+                    if (field.get(trackers) != null) {
+                        trackersList.add(field.getName());
+                    }
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
             }
         }
 
-        var decision = new Decision(canRedirect, maliciousVotes, suspiciousVotes, vendorNameMalicious, vendorNameSuspicious, trackersList, urlAnalysisResponse);
-
-        return decision;
+        return new Decision(canRedirect, maliciousVotes, suspiciousVotes, vendorNameMalicious, vendorNameSuspicious, trackersList, urlAnalysisResponse);
 
     }
 }
